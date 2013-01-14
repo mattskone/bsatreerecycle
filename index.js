@@ -5,6 +5,7 @@ var app = express();
 app.configure(function() {
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/views');
+  app.use(express.static(__dirname + '/static'));
 });
 
 if(app.settings.env == 'production') {
@@ -19,7 +20,7 @@ app.get('/', function(request, response) {
 });
 
 app.get('/map', function(req, res) {
-  res.send('Here\'s the map');
+  res.render('map');
 });
 
 app.listen(port, function() {
