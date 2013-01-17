@@ -1,6 +1,6 @@
-var express = require('express');
-
-var app = express();
+var express = require('express'),
+    app = express(),
+    connections = [];
 
 app.configure(function() {
   app.set('view engine', 'jade');
@@ -21,19 +21,8 @@ app.get('/', function(request, response) {
   response.render('index');
 });
 
-var connections = [];
-
-app.get('/events', function(req, res) {
-  //connections.push(res);
-  //console.log('Connections: ' + connections.length);
-  
-  //res.writeHead(200, {
-  //  'Content-Type': 'text/event-stream',
-  //  'Cache-Control': 'no-cache',
-  //  'Connection': 'keep-alive'
-  //});
-  
-  //sendEvent('First call');
+app.get('/map', function(req, res) {
+  res.render('map');
 });
 
 app.get('/createmarker', function(req, res) {
@@ -43,29 +32,8 @@ app.get('/createmarker', function(req, res) {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Spam': 'eggs'
+    'Connection': 'keep-alive'
   });
-});
-
-app.get('/sendevent', function(req, res) {
-  //sendEvent('Click!');
-  res.send(200);
-});
-
-app.get('/map', function(req, res) {
-  res.render('map');
-});
-
-app.get('/jquerytest', function(req, res) {
-  res.send(req.url);
-});
-
-var times = new Array();
-
-app.post('/jquerytest', function(req, res) {
-  times.push(req.body.time);
-  res.send(times);
 });
 
 app.post('/createmarker', function(req, res) {
@@ -80,18 +48,6 @@ function sendMarker(data) {
     connections.forEach(function(element, index, array) {
       element.write(data);
     });
-  };
-};
-
-function sendEvent(data) {
-  if(data != null) {
-    var event = 'data: ' + data + '\n\n';
-    console.log(event);
-    connections.forEach(function(element, index, array) {
-      element.write(event);
-    });
-  } else {
-    return null;
   };
 };
 

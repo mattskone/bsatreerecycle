@@ -19,9 +19,9 @@ html
             $(document).ready(function() {
                 var source = new EventSource('createmarker');
                 source.onmessage = function(e) {
-                    //addMarker(e.data);
                     $('#output').append(e.data);
-                    console.log('/map received: ' + e.data);
+                    var latlng = JSON.parse(e.data);
+                    addMarker(new google.maps.LatLng(latlng.lat, latlng.lng));
                 };
             });
         
