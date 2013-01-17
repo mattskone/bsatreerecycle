@@ -3,5 +3,32 @@ html
     head
         title BSA Tree Recycle
       
+        script(
+            type="text/javascript"
+            src="jquery-1.9.0.min.js")
+        
+        script(type="text/javascript")
+            $(document).ready(function() {
+                //var source = new EventSource('events');
+                //source.onmessage = function(e) {
+                //    $('#output').append(e.data + '<br/>');
+                //};
+                
+                $("#mybutton").click(function(){
+                    $.post('jquerytest', {lat: 47, lon: -122, time: new Date().getTime()}, function(data){
+                        $('#output').append(data[data.length - 1] + '<br/>');
+                    });
+                });
+            });
+        
     body
         p Welcome to the BSA Tree Recycle jade template
+        
+        form(method="post", action="createmarker")
+            p Lat:&nbsp;
+                input(name="lat", id="lat")
+            p Long:&nbsp;
+                input(name="lng", id="lng")
+            button(type="submit") Click me
+        
+        #output

@@ -9,9 +9,22 @@ html
 
         script(
             type="text/javascript"
+            src="jquery-1.9.0.min.js")
+        
+        script(
+            type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAhxhtMPEhqRVuw2n5zs6CYJ5iv36lgs-w&sensor=false")
-
+            
         script(type="text/javascript")
+            $(document).ready(function() {
+                var source = new EventSource('createmarker');
+                source.onmessage = function(e) {
+                    //addMarker(e.data);
+                    $('#output').append(e.data);
+                    console.log('/map received: ' + e.data);
+                };
+            });
+        
             var map;
             function initialize() {
               var mapOptions = {
@@ -26,7 +39,6 @@ html
                 title: "Beaver Lake Middle School",
                 map: map
               });
-              //blms.setMap(map);
               google.maps.event.addListener(map, "click", function(event) {
                 addMarker(event.latLng);
               });
@@ -41,6 +53,7 @@ html
               });
             };
       
-      body(onload="initialize()")
+    body(onload="initialize()")
         p Here's the new map page!
+        #output
         #map_canvas(style="width:100%; height:100%")
