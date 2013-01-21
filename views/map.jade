@@ -9,7 +9,7 @@ html
 
         script(
             type="text/javascript"
-            src="jquery-1.9.0.min.js")
+            src="../jquery-1.9.0.min.js")
         
         script(
             type="text/javascript"
@@ -30,7 +30,7 @@ html
             });
             
             function addMarker(location) {
-              var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
+              var image = new google.maps.MarkerImage("../tree.gif", null, null, null, new google.maps.Size(16, 24));
               marker = new google.maps.Marker({
                 position: location,
                 map: map,
