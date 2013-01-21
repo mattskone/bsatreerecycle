@@ -18,28 +18,43 @@ if(app.settings.env == 'production') {
 }
 
 app.get('/', function(request, response) {
-  response.render('index');
+  response.render('index', {local_data: request.headers['user-agent']});
 });
 
+var markersarray = [
+  {"lat":47.57, "lng":-122.015},
+  {"lat":47.57, "lng":-122.01},
+  {"lat":47.565, "lng":-122.01},
+  {"lat":47.565, "lng":-122.015}
+];
+
 app.get('/map', function(req, res) {
-  res.render('map');
+  res.render('map', {local_data: JSON.stringify({markers:markersarray})});
 });
 
 app.get('/createmarker', function(req, res) {
-  connections.push(res);
-  console.log('Connections: ' + connections.length);
+  console.log('Connections: ' + connections.push(res));
   
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive'
   });
+  
+  req.on('close', function() {
+    connections = connections.filter(function(element, index, array) {
+      return element !== res;
+    });
+    console.log('Connection: ' + connections.length);
+  });
 });
 
 app.post('/createmarker', function(req, res) {
-  var latlng = 'data: ' + JSON.stringify({"lat":req.body.lat,"lng":req.body.lng}) + '\n\n';
+  var latlng = JSON.stringify({"lat":req.body.lat,"lng":req.body.lng});
+  markersarray.push(JSON.parse(latlng));
   console.log(latlng);
-  sendMarker(latlng);
+  console.log('Total markers: ' + markersarray.length);
+  sendMarker('data: ' + latlng + '\n\n');
   res.redirect('..');
 });
 

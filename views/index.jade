@@ -9,11 +9,8 @@ html
         
         script(type="text/javascript")
             $(document).ready(function() {
-                $("#mybutton").click(function(){
-                    $.post('jquerytest', {lat: 47, lon: -122, time: new Date().getTime()}, function(data){
-                        $('#output').append(data[data.length - 1] + '<br/>');
-                    });
-                });
+                console.log('!{local_data}');
+                $('#output').append('!{local_data}');
             });
         
     body
@@ -25,3 +22,6 @@ html
             p Long:&nbsp;
                 input(name="lng", id="lng")
             button(type="submit") Click me
+            
+        br
+        #output

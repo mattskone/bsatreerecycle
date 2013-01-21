@@ -16,6 +16,10 @@ html
             src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAhxhtMPEhqRVuw2n5zs6CYJ5iv36lgs-w&sensor=false")
             
         script(type="text/javascript")
+            var local_data = !{local_data};
+            console.log(local_data.markers.length);
+
+        script(type="text/javascript")
             $(document).ready(function() {
                 var source = new EventSource('createmarker');
                 source.onmessage = function(e) {
@@ -24,6 +28,15 @@ html
                     addMarker(new google.maps.LatLng(latlng.lat, latlng.lng));
                 };
             });
+            
+            function addMarker(location) {
+              var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
+              marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                icon: image
+              });
+            };
         
             var map;
             function initialize() {
@@ -39,17 +52,15 @@ html
                 title: "Beaver Lake Middle School",
                 map: map
               });
+              
+              local_data.markers.forEach(function(element, index, array) {
+                addMarker(new google.maps.LatLng(element.lat, element.lng));
+              });
+              
               google.maps.event.addListener(map, "click", function(event) {
                 addMarker(event.latLng);
-              });
-            };
-            
-            function addMarker(location) {
-              var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
-              marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                icon: image
+                local_data.markers.push({"lat":event.latLng.lat(), "lng":event.latLng.lng()});
+                console.log(local_data.markers.length);
               });
             };
       
