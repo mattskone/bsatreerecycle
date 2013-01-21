@@ -1,0 +1,27 @@
+doctype 5
+html
+    head
+        title
+            BSA Tree Recycle Mobile
+            
+        script(
+            type="text/javascript"
+            src="jquery-1.9.0.min.js")
+
+        script(type="text/javascript")
+            function markTree() {
+              navigator.geolocation.getCurrentPosition(function(posit) {
+                var lat = posit.coords.latitude;
+                var lng = posit.coords.longitude;
+                console.log('Lat: ' + lat);
+                console.log('Long: ' + lng);
+                $.post('createmarker', { 'lat': lat, 'lng': lng });
+                $('#latlng').append('Lat: ' + lat + ', Long: ' + lng);
+              });
+            };
+    
+    body
+        button(onClick="markTree();") Mark a pickup
+        
+        br
+        #latlng
