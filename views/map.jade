@@ -21,7 +21,7 @@ html
 
         script(type="text/javascript")
             $(document).ready(function() {
-                var source = new EventSource('createmarker');
+                var source = new EventSource('../createmarker');
                 source.onmessage = function(e) {
                     $('#output').append(e.data);
                     var latlng = JSON.parse(e.data);

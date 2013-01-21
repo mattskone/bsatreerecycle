@@ -19,7 +19,7 @@ if(app.settings.env == 'production') {
 
 app.get('/', function(request, response) {
   //response.render('index', {local_data: request.headers['user-agent']});
-  response.render('mobile_mark');
+  response.render('mobile_mark', {local_data: request.headers['user-agent']});
 });
 
 var markersarray = [

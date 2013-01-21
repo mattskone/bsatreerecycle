@@ -8,6 +8,10 @@ html
             src="jquery-1.9.0.min.js")
 
         script(type="text/javascript")
+            $(document).ready(function() {
+                $('#output').append('!{local_data}');
+            });
+        
             function markTree() {
               navigator.geolocation.getCurrentPosition(function(posit) {
                 var lat = posit.coords.latitude;
@@ -22,5 +26,8 @@ html
     body
         button(onClick="markTree();") Mark a pickup
         
+        br
+        br
+        #output
         br
         #latlng
