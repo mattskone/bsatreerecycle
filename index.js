@@ -42,6 +42,12 @@ app.get('/createmarker', function(req, res) {
     'Connection': 'keep-alive'
   });
   
+  setInterval(function() {
+    connections.forEach(function(element, index, array) {
+      element.write('\n');  //Send one char every 25 seconds to prevent the Heroku H12 (Request Timeout) error
+    });
+  }, 25000);
+  
   req.on('close', function() {
     connections = connections.filter(function(element, index, array) {
       return element !== res;
