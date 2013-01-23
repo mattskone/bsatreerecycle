@@ -73,6 +73,10 @@ function sendMarker(data) {
   };
 };
 
-app.listen(port, function() {
+app.get('/jstest', function(req, res) {
+  res.render('jstest.jade');
+});
+
+app.listen(port, "0.0.0.0", function() {
   console.log("Listening on " + port);
 });
