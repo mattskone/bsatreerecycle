@@ -13,7 +13,11 @@ html
             });
             
             function test() {
-              alert('Geoloc supported: ' + (navigator.geolocation !== 'undefined'));
+              navigator.geolocation.getCurrentPosition(function(posit) {
+                var lat = posit.coords.latitude;
+                var lng = posit.coords.longitude;
+                alert(lat);
+              });
             };
         
     
