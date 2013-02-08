@@ -1,14 +1,18 @@
 var express = require('express'),
-    app = express(),
-    connections = [];
+  hbs = require('hbs'),
+  app = express(),
+  connections = [];
 
 app.configure(function() {
-  app.set('view engine', 'jade');
+  app.engine('html', hbs.__express);
+  app.set('view engine', 'html');
   app.set('views', __dirname + '/views');
-  app.use(express.bodyParser());
-  app.use(express.logger('tiny'));
   app.use(express.static('images'));
   app.use(express.static('scripts'));
+  app.use(express.static('styles'));
+  app.use(express.bodyParser());
+  app.use(express.favicon('images/favicon_32x32.ico'));
+  app.use(express.logger('tiny'));
 });
 
 if(app.settings.env == 'production') {
@@ -18,8 +22,12 @@ if(app.settings.env == 'production') {
 }
 
 app.get('/', function(request, response) {
-  //response.render('index', {local_data: request.headers['user-agent']});
-  response.render('mobile_mark', {local_data: request.headers['user-agent']});
+  response.render('index'); //, {local_data: request.headers['user-agent']});
+  //response.render('mobile_mark', {useragent: request.headers['user-agent']});
+});
+
+app.get('/mark', function(req, res) {
+  res.render('mark', {useragent: req.headers['user-agent']});
 });
 
 var markersarray = [
@@ -30,7 +38,7 @@ var markersarray = [
 ];
 
 app.get('/map', function(req, res) {
-  res.render('map', {local_data: JSON.stringify({markers:markersarray})});
+    res.render('map', { context: JSON.stringify({ markers: markersarray }) });
 });
 
 app.get('/createmarker', function(req, res) {
