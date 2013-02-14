@@ -17,6 +17,7 @@
       }
     </style>
     <link rel="stylesheet" type="text/css" href="bootstrap-responsive.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui-1.10.0.custom.css">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -31,20 +32,27 @@
 
     <!-- Scripts -->
     <script type="text/javascript" src="jquery-1.9.0.min.js"></script>
+    <script type="text/javascript" src="jquery-ui-1.10.0.custom.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAhxhtMPEhqRVuw2n5zs6CYJ5iv36lgs-w&sensor=false"></script>
     <script type="text/javascript">
         var map;
-        {{#with context}}
-        var context = {{{this}}};
-        {{/with}}
+        var markers = [];
 
         $(document).ready(function() {
-            var source = new EventSource('../createmarker');
+            $.getJSON('pickups/some_date', function(data) {
+                data.pickups.forEach(function(elem, index, array) {
+                    addMarker(new google.maps.LatLng(elem.lat, elem.lng),
+                        elem.timestamp, elem.tag);
+                });
+            });
+
+            var source = new EventSource('../pickups');
             source.onmessage = function(e) {
                 $('#output').append(e.data);
                 var latlng = JSON.parse(e.data);
                 addMarker(new google.maps.LatLng(latlng.lat, latlng.lng));
             };
+
 
             $(window).resize(function() {
                 $('#map_canvas').css('width', $('.container').width());
@@ -54,15 +62,45 @@
             $('body').on('load', initialize());
             $('#map_canvas').css('width', $('.container').width());
             $('#map_canvas').css('height', $('.container').width() * 0.75);
+            
+            $('#calendar').datepicker({
+                inline:true,
+                maxDate:0,
+                onSelect: function(dateText, calendar) {
+                    var d = new Date(dateText);
+                    $('#date_link').html(
+                        d.setHours(0,0,0,0) == new Date().setHours(0,0,0,0) ?
+                        "Today" :
+                        d.toDateString()
+                    );
+                    $('#calendar').toggle('slow');
+                    clearMarkers();
+                }
+            });
+            $('#date_link').html("Today");
+            $('#date_link').click(function() {
+                $('#calendar').toggle('slow');
+            });
         });
 
-        function addMarker(location) {
+        function clearMarkers() {
+            markers.forEach(function(elem, index, array) {
+                elem.setMap(null);
+            });
+            markers = [];
+        };
+
+        function addMarker(location, dateTime, tag) {
             var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
+            var finalDateTime;
+            if(dateTime) { finalDateTime = new Date(dateTime).toLocaleString(); }
             marker = new google.maps.Marker({
                 position: location,
+                title: (tag || "") + " " + (finalDateTime || ""),
                 map: map,
                 icon: image
             });
+            markers.push(marker);
         };
 
         function initialize() {
@@ -78,15 +116,7 @@
                 title: "Beaver Lake Middle School",
                 map: map
             });
-            google.maps.event.addListener(map, "click", function (event) {
-                addMarker(event.latLng);
-                context.markers.push({ "lat": event.latLng.lat(), "lng": event.latLng.lng() });
-                console.log('Markers: ' + context.markers.length);
-            });
 
-            context.markers.forEach(function(element, index, array) {
-                addMarker(new google.maps.LatLng(element.lat, element.lng));
-            });
         };
 
     </script>
@@ -114,11 +144,10 @@
     </div>
 
     <div class="container">
-        <div class="hero-unit">
-            <div class="row">
-                <div class="span12">
-                    <!-- content here -->
-                </div>
+        <div class="hero-unit" style="padding-top:10px; padding-bottom:10px">
+            <div class="row" align="left">
+                Show pickups from: <a id="date_link" style="cursor:pointer"></a>
+                <div id="calendar" style="font-size:small; line-height:15px; display:none;"></div>
             </div>
         </div>
     </div>

@@ -1,12 +1,13 @@
 {
   "name": "bsatreerecycle",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Helping Boy Scouts track Christmas tree recycling",
   "author": "Matt Skone",
   "license": "BSD",
   "dependencies": {
     "express": "~3.0.6",
-    "hbs": "~2.0.1"
+    "hbs": "~2.0.1",
+    "mongodb": "1.2.11"
   },
   "engines": {
     "node": "0.8.x",

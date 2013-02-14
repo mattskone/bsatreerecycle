@@ -30,18 +30,18 @@ app.get('/mark', function(req, res) {
   res.render('mark', {useragent: req.headers['user-agent']});
 });
 
-var markersarray = [
-  {"lat":47.57, "lng":-122.015},
-  {"lat":47.57, "lng":-122.01},
-  {"lat":47.565, "lng":-122.01},
-  {"lat":47.565, "lng":-122.015}
-];
+var pickups = { "pickups": [
+  {"lat":47.57, "lng":-122.015, "timestamp":1360685482621, "tag":"Test1"},
+  {"lat":47.57, "lng":-122.01, "timestamp":1360685515901, "tag":"Test2"},
+  {"lat":47.565, "lng":-122.01, "timestamp":1360685602335, "tag":"Test3"},
+  {"lat":47.565, "lng":-122.017, "timestamp":1360685698461, "tag":"Test4"}
+]};
 
 app.get('/map', function(req, res) {
-    res.render('map', { context: JSON.stringify({ markers: markersarray }) });
+    res.render('map'); //, { context: JSON.stringify({ markers: markersarray }) });
 });
 
-app.get('/createmarker', function(req, res) {
+app.get('/pickups', function(req, res) {
   console.log('Connections: ' + connections.push(res));
   
   res.writeHead(200, {
@@ -64,11 +64,15 @@ app.get('/createmarker', function(req, res) {
   });
 });
 
-app.post('/createmarker', function(req, res) {
+app.get('/pickups/:date', function(req, res) {
+  res.json(pickups);
+});
+
+app.post('/pickups', function(req, res) {
   var latlng = JSON.stringify({"lat":req.body.lat,"lng":req.body.lng});
-  markersarray.push(JSON.parse(latlng));
+  //markersarray.push(JSON.parse(latlng));
   console.log(latlng);
-  console.log('Total markers: ' + markersarray.length);
+  //console.log('Total markers: ' + markersarray.length);
   sendMarker('data: ' + latlng + '\n\n');
   res.redirect('..');
 });
