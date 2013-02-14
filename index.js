@@ -1,5 +1,6 @@
 var express = require('express'),
   hbs = require('hbs'),
+  MongoClient = require('mongodb').MongoClient,
   app = express(),
   connections = [];
 
@@ -69,25 +70,38 @@ app.get('/pickups/:date', function(req, res) {
 });
 
 app.post('/pickups', function(req, res) {
-  var latlng = JSON.stringify({"lat":req.body.lat,"lng":req.body.lng});
-  //markersarray.push(JSON.parse(latlng));
-  console.log(latlng);
-  //console.log('Total markers: ' + markersarray.length);
-  sendMarker('data: ' + latlng + '\n\n');
+  var pickup = {
+    "lat":parseFloat(req.body.lat),
+    "lng":parseFloat(req.body.lng),
+    "timestamp":new Date(req.body.timestamp),
+    "tag":req.body.tag
+  };
+
+  MongoClient.connect(process.env.MONGOHQ_URL, function(err, db) {
+    if(!err) {
+      db.collection('pickups', function(err, coll) {
+        if(!err) {
+          coll.insert(pickup, {w:1}, function(err, results) {
+            if(err) { console.log(err); };
+            db.close();
+          });
+        };
+      });
+    };
+  });
+
+  console.log(pickup);
+  sendMarker('data: ' + JSON.stringify(pickup) + '\n\n');
   res.redirect('..');
 });
 
 function sendMarker(data) {
-  if(data != null) {
+  if(data) {
     connections.forEach(function(element, index, array) {
       element.write(data);
     });
   };
 };
-
-app.get('/jstest', function(req, res) {
-  res.render('jstest.jade');
-});
 
 app.listen(port, "0.0.0.0", function() {
   console.log("Listening on " + port);

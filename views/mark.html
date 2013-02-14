@@ -42,7 +42,7 @@
     <script type="text/javascript" src="jquery-1.9.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          //$('#output').append('{{useragent}}'); 
+          $('#output').append('{{useragent}}<br/>'); 
           $('#output').append(document.cookie);
 
           var name = /name=.+(?=;?)/.exec(document.cookie);
@@ -54,7 +54,7 @@
               var pickup = {
                 'lat':posit.coords.latitude,
                 'lng':posit.coords.longitude,
-                'time':d,
+                'timestamp':d,
                 'tag':$('#name').text()
               };
               $.post('pickups', pickup);

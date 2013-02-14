@@ -90,10 +90,10 @@
             markers = [];
         };
 
-        function addMarker(location, dateTime, tag) {
+        function addMarker(location, timestamp, tag) {
             var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
-            var finalDateTime;
-            if(dateTime) { finalDateTime = new Date(dateTime).toLocaleString(); }
+            var finalTimestamp;
+            if(timestamp) { finalTimestamp = new Date(timestamp).toLocaleString(); }
             marker = new google.maps.Marker({
                 position: location,
                 title: (tag || "") + " " + (finalDateTime || ""),
