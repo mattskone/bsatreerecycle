@@ -42,8 +42,8 @@
     <script type="text/javascript" src="jquery-1.9.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-          $('#output').append('{{useragent}}<br/>'); 
-          $('#output').append(document.cookie);
+          // $('#output').append('{{useragent}}<br/>'); 
+          // $('#output').append(document.cookie);
 
           var name = /name=[^;]+/.exec(document.cookie);
           $('#name').text(name ? unescape(name[0]).slice(5) : 'No name');
@@ -65,7 +65,7 @@
               };
               $.post('pickups', pickup);
               $('#last_pickup').html(d.toLocaleString());
-              $('#latlng').append(JSON.stringify(pickup));
+              // $('#latlng').append(JSON.stringify(pickup));
               document.cookie='name=' + escape($('#name').text()) +
                 ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
             });
