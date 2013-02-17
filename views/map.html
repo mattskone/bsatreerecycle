@@ -35,24 +35,32 @@
     <script type="text/javascript" src="jquery-ui-1.10.0.custom.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAhxhtMPEhqRVuw2n5zs6CYJ5iv36lgs-w&sensor=false"></script>
     <script type="text/javascript">
-        var map;
-        var markers = [];
+        var map,
+            cookieZoom,
+            cookieCenter,
+            initialZoom,
+            initialCenter,
+            markers = [],
+            selectedDate,
+            today = new Date();
 
         $(document).ready(function() {
-            $.getJSON('pickups/some_date', function(data) {
-                data.pickups.forEach(function(elem, index, array) {
-                    addMarker(new google.maps.LatLng(elem.lat, elem.lng),
-                        elem.timestamp, elem.tag);
-                });
+            cookieZoom = /zoom=\d+/.exec(document.cookie);
+            initialZoom = cookieZoom ? Number(cookieZoom[0].slice(5)) : 4;
+            cookieCenter = /center=\(.+(?=\);?)/.exec(document.cookie);
+            initialCenter = cookieCenter ? cookieCenter[0].slice(8) : '39.8333, -98.5833';
+            $.getJSON('pickups/' + today.setHours(0,0,0,0), function(data) {
+                addMarkers(data);
             });
 
             var source = new EventSource('../pickups');
             source.onmessage = function(e) {
-                $('#output').append(e.data);
                 var latlng = JSON.parse(e.data);
-                addMarker(new google.maps.LatLng(latlng.lat, latlng.lng));
+                //Only load new trees real-time if user is viewing pickups for "Today":
+                if(!selectedDate || (today - selectedDate < 1000*60*60*24)) {
+                    addMarker(new google.maps.LatLng(latlng.lat, latlng.lng));
+                }
             };
-
 
             $(window).resize(function() {
                 $('#map_canvas').css('width', $('.container').width());
@@ -67,19 +75,35 @@
                 inline:true,
                 maxDate:0,
                 onSelect: function(dateText, calendar) {
-                    var d = new Date(dateText);
+                    selectedDate = new Date($('#calendar').datepicker("getDate"));
                     $('#date_link').html(
-                        d.setHours(0,0,0,0) == new Date().setHours(0,0,0,0) ?
+                        today - selectedDate < 1000*60*60*24 ?
                         "Today" :
-                        d.toDateString()
+                        selectedDate.toDateString()
                     );
                     $('#calendar').toggle('slow');
+ 
                     clearMarkers();
+
+                    $.getJSON('pickups/' + selectedDate.setHours(0,0,0,0), function(data) {
+                        addMarkers(data);
+                    });
                 }
             });
+
             $('#date_link').html("Today");
             $('#date_link').click(function() {
                 $('#calendar').toggle('slow');
+            });
+
+            $('#set_map_default').click(function() {
+                var zoom = map.getZoom();
+                var latlng = map.getCenter();
+                document.cookie='zoom=' + zoom + 
+                    ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
+                document.cookie='center=' + latlng +
+                    ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
+                $('#output').html(document.cookie);
             });
         });
 
@@ -90,13 +114,20 @@
             markers = [];
         };
 
+        function addMarkers(markers) {
+            markers.pickups.forEach(function(elem, index, array) {
+                addMarker(new google.maps.LatLng(elem.lat, elem.lng),
+                    elem.timestamp, elem.tag);
+            });
+        };
+
         function addMarker(location, timestamp, tag) {
             var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
             var finalTimestamp;
             if(timestamp) { finalTimestamp = new Date(timestamp).toLocaleString(); }
             marker = new google.maps.Marker({
                 position: location,
-                title: (tag || "") + " " + (finalDateTime || ""),
+                title: (tag || "") + " " + (finalTimestamp || ""),
                 map: map,
                 icon: image
             });
@@ -104,19 +135,14 @@
         };
 
         function initialize() {
+            var latlng = initialCenter.split(', ');
             var mapOptions = {
-                center: new google.maps.LatLng(47.56785, -122.0138),
-                zoom: 14,
+                center: new google.maps.LatLng(latlng[0], latlng[1]),
+                zoom: initialZoom,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             map = new google.maps.Map(document.getElementById("map_canvas"),
                 mapOptions);
-            var blms = new google.maps.Marker({
-                position: new google.maps.LatLng(47.58, -122.0056),
-                title: "Beaver Lake Middle School",
-                map: map
-            });
-
         };
 
     </script>
@@ -145,9 +171,12 @@
 
     <div class="container">
         <div class="hero-unit" style="padding-top:10px; padding-bottom:10px">
-            <div class="row" align="left">
+            <div class="row" align="center">
+                <img src="tree_57x57.png" /><br/>
                 Show pickups from: <a id="date_link" style="cursor:pointer"></a>
                 <div id="calendar" style="font-size:small; line-height:15px; display:none;"></div>
+                <br/>
+                <p><small>(Zoomed in on your neighborhood? <a id="set_map_default" style="cursor:pointer">Set this map as your default</a>.)</small></p>
             </div>
         </div>
     </div>

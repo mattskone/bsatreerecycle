@@ -1,4 +1,5 @@
 var express = require('express'),
+  fs = require('fs'),
   hbs = require('hbs'),
   MongoClient = require('mongodb').MongoClient,
   app = express(),
@@ -27,6 +28,17 @@ app.get('/', function(request, response) {
   //response.render('mobile_mark', {useragent: request.headers['user-agent']});
 });
 
+app.get('/about', function(req, res) {
+  res.render('about');
+});
+
+app.get('/license', function(req, res) {
+  res.set('Content-Type', 'text/plain');
+  fs.readFile('LICENSE', 'utf8', function(err, text) {
+    res.send(text);
+  });
+});
+
 app.get('/mark', function(req, res) {
   res.render('mark', {useragent: req.headers['user-agent']});
 });
@@ -35,11 +47,11 @@ var pickups = { "pickups": [
   {"lat":47.57, "lng":-122.015, "timestamp":1360685482621, "tag":"Test1"},
   {"lat":47.57, "lng":-122.01, "timestamp":1360685515901, "tag":"Test2"},
   {"lat":47.565, "lng":-122.01, "timestamp":1360685602335, "tag":"Test3"},
-  {"lat":47.565, "lng":-122.017, "timestamp":1360685698461, "tag":"Test4"}
+  {"lat":47.565, "lng":-122.015, "timestamp":1360685698461, "tag":"Test4"}
 ]};
 
 app.get('/map', function(req, res) {
-    res.render('map'); //, { context: JSON.stringify({ markers: markersarray }) });
+    res.render('map');
 });
 
 app.get('/pickups', function(req, res) {
@@ -66,7 +78,28 @@ app.get('/pickups', function(req, res) {
 });
 
 app.get('/pickups/:date', function(req, res) {
-  res.json(pickups);
+  console.log(req.params.date);
+  //TODO: handle NaN values:
+  var ticks = Number(req.params.date)
+  // console.log(new Date(ticks));
+  MongoClient.connect(process.env.MONGOHQ_URL, function(err, db) {
+    if(!err) {
+      db.collection('pickups', function(err, coll) {
+        if(!err) {
+          var start = new Date(ticks);
+          var end = new Date(ticks + 1000*60*60*24);
+          // console.log('Start: ' + start.toDateString() + ' End: ' + end.toDateString());
+          coll.find({"timestamp":{$gte: new Date(ticks),$lt: new Date(ticks + 1000*60*60*24)}})
+              .toArray(function(err, docs) {
+                if(!err) {
+                  // console.log(docs.length);
+                  res.json({'pickups': docs});
+                };
+              });
+        };
+      });
+    };
+  });
 });
 
 app.post('/pickups', function(req, res) {
@@ -95,6 +128,7 @@ app.post('/pickups', function(req, res) {
   res.redirect('..');
 });
 
+// This function is for real-time updates of ongoing pickups
 function sendMarker(data) {
   if(data) {
     connections.forEach(function(element, index, array) {

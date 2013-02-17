@@ -45,10 +45,16 @@
           $('#output').append('{{useragent}}<br/>'); 
           $('#output').append(document.cookie);
 
-          var name = /name=.+(?=;?)/.exec(document.cookie);
+          var name = /name=[^;]+/.exec(document.cookie);
           $('#name').text(name ? unescape(name[0]).slice(5) : 'No name');
           
           $('#submit').click(function () {
+            $('#submit').attr('disabled', 'disabled');
+            $('body').css('cursor', 'progress');
+            setTimeout(function() {
+              $('#submit').removeAttr('disabled');
+              $('body').css('cursor', 'default');
+            }, 1000);
             navigator.geolocation.getCurrentPosition(function(posit) {
               var d = new Date();
               var pickup = {
@@ -109,11 +115,15 @@
       <div class="hero-unit">
         <div class="row">
           <div class="span12 center">
-            <button id="submit" class="btn btn-large" type="button">Mark a Pickup</button>
-            <h5>Last pickup: <em><span id="last_pickup">no pickups today</span></em></h5>
-            <h5><em>'<span id="name">No name</span>'</em> will be tagged to these pickups.</h5>
+            <img src="tree_57x57.png" /><br/><br/>
+            <button id="submit" class="btn btn-large btn-success" type="button">Mark a Pickup</button>
+            <br/><br/>
+            Last pickup: <em><span id="last_pickup">no pickups today</span></em>
+            <br/>
+            <em>'<span id="name">No name</span>'</em> will be tagged to these pickups.
+            <br/>
             <input id="name_input" type="search" maxlength=25 placeholder="Type your name here" style="display:none"></input>
-            <h6><a id="change_name" style="cursor:pointer">Change name</a> | <a href="#">What's this?</a></h6>
+            <div><small><a id="change_name" style="cursor:pointer">Change name</a> | <a href="#">What's this?</a></small></div>
           </div>
           <div class="span3">
           </div>
