@@ -1,3 +1,7 @@
+/*
+ * Declare module dependencies
+*/
+
 var express = require('express'),
   fs = require('fs'),
   hbs = require('hbs'),
@@ -6,28 +10,36 @@ var express = require('express'),
   app = express(),
   connections = [];
 
+/*
+ * Configure Express framework
+*/
+
 app.configure(function() {
-  app.engine('html', hbs.__express);
-  app.set('view engine', 'html');
-  app.set('views', __dirname + '/views');
   app.use(express.static('images'));
   app.use(express.static('scripts'));
   app.use(express.static('styles'));
-  app.use(express.bodyParser());
   app.use(express.favicon('images/favicon_32x32.ico'));
   app.use(express.logger('tiny'));
+  app.engine('html', hbs.__express);
+  app.set('view engine', 'html');
+  app.set('views', __dirname + '/views');
+  app.use(express.bodyParser());
 });
 
-if(app.settings.env == 'production') {
-  var port = process.env.PORT || 5000;  
-} else {
-  var port = 9999;
-}
+/*
+ * Register Handlebars partials
+*/
 
-//Without encoding, fnc returns buffer, not string)
+//Without encoding, readFileSync() returns buffer, not string)
 hbs.registerPartial('footer', fs.readFileSync(__dirname + '/views/footer.html', 'utf8'));
 hbs.registerPartial('head', fs.readFileSync(__dirname + '/views/head.html', 'utf8'));
 hbs.registerPartial('nav', fs.readFileSync(__dirname + '/views/nav.html', 'utf8'));
+
+/*
+ * Routes
+*/
+
+// var controllers = require('controllers/controller')(app);
 
 app.get('/', function(request, response) {
   response.render('index', { data: { 
@@ -151,6 +163,14 @@ function sendMarker(data) {
   };
 };
 
-app.listen(port, "0.0.0.0", function() {
-  console.log("Listening on " + port);
-});
+/*
+ * Start Express
+*/
+
+if(app.settings.env == 'production') {
+  var port = process.env.PORT || 5000;  
+} else {
+  var port = 9999;
+}
+
+app.listen(port, "0.0.0.0", function() { });

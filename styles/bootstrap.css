@@ -2251,6 +2251,7 @@ table th[class*="span"],
   background-color: #c4e3f3;
 }
 
+/* MODIFIED */
 [class^="icon-"],
 [class*=" icon-"] {
   display: inline-block;
@@ -2260,13 +2261,14 @@ table th[class*="span"],
   *margin-right: .3em;
   line-height: 14px;
   vertical-align: text-top;
-  background-image: url("../img/glyphicons-halflings.png");
+  /*background-image: url("../img/glyphicons-halflings.png");*/
   background-position: 14px 14px;
   background-repeat: no-repeat;
 }
 
 /* White icons with optional class, or on hover/active states of certain elements */
 
+/* MODIFIED */
 .icon-white,
 .nav-pills > .active > a > [class^="icon-"],
 .nav-pills > .active > a > [class*=" icon-"],
@@ -2280,7 +2282,7 @@ table th[class*="span"],
 .dropdown-menu > .active > a > [class*=" icon-"],
 .dropdown-submenu:hover > a > [class^="icon-"],
 .dropdown-submenu:hover > a > [class*=" icon-"] {
-  background-image: url("../img/glyphicons-halflings-white.png");
+  /*background-image: url("../img/glyphicons-halflings-white.png");*/
 }
 
 .icon-glass {
