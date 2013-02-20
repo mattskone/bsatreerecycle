@@ -2,6 +2,7 @@ var express = require('express'),
   fs = require('fs'),
   hbs = require('hbs'),
   MongoClient = require('mongodb').MongoClient,
+  pkg = require('./package.json'),
   app = express(),
   connections = [];
 
@@ -23,13 +24,25 @@ if(app.settings.env == 'production') {
   var port = 9999;
 }
 
+//Without encoding, fnc returns buffer, not string)
+hbs.registerPartial('footer', fs.readFileSync(__dirname + '/views/footer.html', 'utf8'));
+hbs.registerPartial('head', fs.readFileSync(__dirname + '/views/head.html', 'utf8'));
+hbs.registerPartial('nav', fs.readFileSync(__dirname + '/views/nav.html', 'utf8'));
+
 app.get('/', function(request, response) {
-  response.render('index'); //, {local_data: request.headers['user-agent']});
-  //response.render('mobile_mark', {useragent: request.headers['user-agent']});
+  response.render('index', { data: { 
+    version: pkg.version, 
+    page: 'index',
+    title: 'Home'
+  } });
 });
 
 app.get('/about', function(req, res) {
-  res.render('about');
+  res.render('about', { data: { 
+    version: pkg.version, 
+    page: 'about',
+    title: 'About'
+  } });
 });
 
 app.get('/license', function(req, res) {
@@ -40,18 +53,19 @@ app.get('/license', function(req, res) {
 });
 
 app.get('/mark', function(req, res) {
-  res.render('mark', {useragent: req.headers['user-agent']});
+  res.render('mark', { data: { 
+    version: pkg.version, 
+    page: 'mark',
+    title: 'Mark a Pickup'
+  } });
 });
 
-var pickups = { "pickups": [
-  {"lat":47.57, "lng":-122.015, "timestamp":1360685482621, "tag":"Test1"},
-  {"lat":47.57, "lng":-122.01, "timestamp":1360685515901, "tag":"Test2"},
-  {"lat":47.565, "lng":-122.01, "timestamp":1360685602335, "tag":"Test3"},
-  {"lat":47.565, "lng":-122.015, "timestamp":1360685698461, "tag":"Test4"}
-]};
-
 app.get('/map', function(req, res) {
-    res.render('map');
+  res.render('map', { data: { 
+    version: pkg.version, 
+    page: 'map',
+    title: 'Map'
+  } });
 });
 
 app.get('/pickups', function(req, res) {

@@ -1,0 +1,25 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('li#{{#with data}}{{page}}{{/with}}').addClass('active');
+    })
+  </script>
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand">BSA Tree Recycle</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li id="index"><a href="/">Home</a></li>
+          <li id="about"><a href="about">About</a></li>
+          <li id="mark"><a href="mark">Mark</a></li>
+          <li id="map"><a href="map">Map</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

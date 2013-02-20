@@ -1,173 +1,19 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Map | BSA Tree Recycle</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <!-- Styles -->
-    <link rel="stylesheet" type="text/css" href="bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="custom.css">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    <link rel="stylesheet" type="text/css" href="bootstrap-responsive.css">
+    {{> head}}
+    
     <link rel="stylesheet" type="text/css" href="jquery-ui-1.10.0.custom.css">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon" sizes="114x114" href="tree_114x114.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="tree_72x72.png">
-    <link rel="apple-touch-icon" sizes="57x57" href="tree_57x57.png">
-    <link rel="shortcut icon" href="favicon_32x32.ico">
-
-    <!-- Scripts -->
     <script type="text/javascript" src="jquery-1.9.0.min.js"></script>
     <script type="text/javascript" src="jquery-ui-1.10.0.custom.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAhxhtMPEhqRVuw2n5zs6CYJ5iv36lgs-w&sensor=false"></script>
-    <script type="text/javascript">
-        var map,
-            cookieZoom,
-            cookieCenter,
-            initialZoom,
-            initialCenter,
-            markers = [],
-            selectedDate,
-            today = new Date();
+    <script type="text/javascript" src="map.js"></script>
+  </head>
 
-        $(document).ready(function() {
-            cookieZoom = /zoom=\d+/.exec(document.cookie);
-            initialZoom = cookieZoom ? Number(cookieZoom[0].slice(5)) : 4;
-            cookieCenter = /center=\(.+(?=\);?)/.exec(document.cookie);
-            initialCenter = cookieCenter ? cookieCenter[0].slice(8) : '39.8333, -98.5833';
-            $.getJSON('pickups/' + today.setHours(0,0,0,0), function(data) {
-                addMarkers(data);
-            });
+  <body>
 
-            var source = new EventSource('../pickups');
-            source.onmessage = function(e) {
-                var latlng = JSON.parse(e.data);
-                //Only load new trees real-time if user is viewing pickups for "Today":
-                if(!selectedDate || (today - selectedDate < 1000*60*60*24)) {
-                    addMarker(new google.maps.LatLng(latlng.lat, latlng.lng));
-                }
-            };
-
-            $(window).resize(function() {
-                $('#map_canvas').css('width', $('.container').width());
-                $('#map_canvas').css('height', $('.container').width() * 0.75);
-            })
-
-            $('body').on('load', initialize());
-            $('#map_canvas').css('width', $('.container').width());
-            $('#map_canvas').css('height', $('.container').width() * 0.75);
-            
-            $('#calendar').datepicker({
-                inline:true,
-                maxDate:0,
-                onSelect: function(dateText, calendar) {
-                    selectedDate = new Date($('#calendar').datepicker("getDate"));
-                    $('#date_link').html(
-                        today - selectedDate < 1000*60*60*24 ?
-                        "Today" :
-                        selectedDate.toDateString()
-                    );
-                    $('#calendar').toggle('slow');
- 
-                    clearMarkers();
-
-                    $.getJSON('pickups/' + selectedDate.setHours(0,0,0,0), function(data) {
-                        addMarkers(data);
-                    });
-                }
-            });
-
-            $('#date_link').html("Today");
-            $('#date_link').click(function() {
-                $('#calendar').toggle('slow');
-            });
-
-            $('#set_map_default').click(function() {
-                var zoom = map.getZoom();
-                var latlng = map.getCenter();
-                document.cookie='zoom=' + zoom + 
-                    ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
-                document.cookie='center=' + latlng +
-                    ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
-                // $('#output').html(document.cookie);
-            });
-        });
-
-        function clearMarkers() {
-            markers.forEach(function(elem, index, array) {
-                elem.setMap(null);
-            });
-            markers = [];
-        };
-
-        function addMarkers(markers) {
-            markers.pickups.forEach(function(elem, index, array) {
-                addMarker(new google.maps.LatLng(elem.lat, elem.lng),
-                    elem.timestamp, elem.tag);
-            });
-        };
-
-        function addMarker(location, timestamp, tag) {
-            var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
-            var finalTimestamp;
-            if(timestamp) { finalTimestamp = new Date(timestamp).toLocaleString(); }
-            marker = new google.maps.Marker({
-                position: location,
-                title: (tag || "") + " " + (finalTimestamp || ""),
-                map: map,
-                icon: image
-            });
-            markers.push(marker);
-        };
-
-        function initialize() {
-            var latlng = initialCenter.split(', ');
-            var mapOptions = {
-                center: new google.maps.LatLng(latlng[0], latlng[1]),
-                zoom: initialZoom,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById("map_canvas"),
-                mapOptions);
-        };
-
-    </script>
-</head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand">BSA Tree Recycle</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="/">Home</a></li>
-              <li><a href="about">About</a></li>
-              <li><a href="mark">Mark</a></li>
-              <li class="active"><a href="map">Map</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
+    {{> nav}}
 
     <div class="container">
         <div class="hero-unit" style="padding-top:10px; padding-bottom:10px">
@@ -179,15 +25,15 @@
                 <p><small>(Zoomed in on your neighborhood? <a id="set_map_default" style="cursor:pointer">Set this map as your default</a>.)</small></p>
             </div>
         </div>
-    </div>
-    <div id="output"></div>
-    <div align="center">
-        <div id="map_canvas" style="width:500px; height:300px;"></div>
+      <div align="center">
+          <div id="map_canvas" style="width:500px; height:300px;"></div>
+      </div>
+
+      {{> footer}}
+
     </div>
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!-- <script src="bootstrap.js"></script> -->
-</body>
+    <script type="text/javascript" src="bootstrap.js"></script>
+
+  </body>
 </html>

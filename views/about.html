@@ -1,62 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>About | BSA Tree Recycle</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <!-- Le styles -->
-    <link rel="stylesheet" type="text/css" href="bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="custom.css">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    <link rel="stylesheet" type="text/css" href="bootstrap-responsive.css">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon" sizes="114x114" href="tree_114x114.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="tree_72x72.png">
-    <link rel="apple-touch-icon" sizes="57x57" href="tree_57x57.png">
-    <link rel="shortcut icon" href="favicon_32x32.ico">
+    {{> head}}
 
     <script type="text/javascript" src="jquery-1.9.0.min.js"></script>
-    <script type="text/javascript">
-        
-    </script>
   </head>
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand">BSA Tree Recycle</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="/">Home</a></li>
-              <li class="active"><a href="about">About</a></li>
-              <li><a href="mark">Mark</a></li>
-              <li><a href="map">Map</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    {{> nav}}
 
     <div class="container">
         <div class="hero-unit" style="padding-top:20px; padding-bottom:20px">
@@ -69,7 +22,7 @@
             <div class="span8 offset2">
                 <p class="lead">Many Boy Scout Troops across the country raise money for Scouting activities by collecting and recycling Christmas trees in their community for a nominal donation. During these fundraisers, adult drivers can use this website via their smartphones to <a href="mark">mark</a> the location of each tree pickup quickly and easily.  The event coordinator can monitor each driver's progress as tree pickups are updated real-time on the <a href="map">map</a>.<p>
 
-                <div align="center"><img src="tree_57x57.png" /></div>
+                <div align="center"><a name="how_to"></a><img src="tree_57x57.png" /></div>
 
                 <h4>How do I use this site?</h4>
                 <p><strong>If you're a driver</strong>, you probably have a car full of Scouts, a trailer hitched to your car and a map of the neighborhoods you're supposed to cover.  Pop some Excedrin and grab another cup of coffee.  Next, navigate to the <a href="mark">Mark a Pickup</a> page on your smartphone and set it next to you in the car.  Each time you stop to pick up a tree, hit the "Mark a Pickup" button, and the website will record the location and time of the pickup. You can tag your pickups to identify them as yours - just use the "Change Tag" link to change your tag to something like "Mike's Car", or "Raven Patrol".</p>
@@ -93,15 +46,11 @@
             </div>
         </div>
 
-        <hr>
-
-        <p>This site is not affiliated with <a href="http://www.scouting.org">Boy Scouts of America</a>.  Use of this website is free, but subject to <a href="license">these conditions</a>.</p>
+      {{> footer}}
 
     </div>
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!-- <script src="bootstrap.js"></script> -->
+    <script type="text/javascript" src="bootstrap.js"></script>
+
   </body>
 </html>
