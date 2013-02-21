@@ -1,4 +1,5 @@
-var MongoClient = require('mongodb').MongoClient;
+var MongoClient = require('mongodb').MongoClient,
+	Pickup = require('../models/pickup');
 
 module.exports = function(params){
 
@@ -9,24 +10,12 @@ module.exports = function(params){
 			if(req.params.date) {
 
 				//TODO: handle NaN values:
-				var ticks = Number(req.params.date)
+				var ticks = Number(req.params.date),
+					pickup = new Pickup();
 
-				MongoClient.connect(process.env.MONGOHQ_URL, function(err, db) {
-					if(!err) {
-						db.collection('pickups', function(err, coll) {
-							if(!err) {
-								var start = new Date(ticks);
-								var end = new Date(ticks + 1000*60*60*24);
-								coll.find({"timestamp":{$gte: new Date(ticks),$lt: new Date(ticks + 1000*60*60*24)}})
-									.toArray(function(err, docs) {
-									    if(!err) {
-									    	res.json({'pickups': docs});
-									    };
-								  	});
-							};
-						});
-					};
-				});
+				pickup.getPickups(ticks, function(spam) {
+					res.json(spam);					
+				})
 
 			} else {
 
@@ -63,19 +52,9 @@ module.exports = function(params){
 				"tag":req.body.tag
 			};
 
-			MongoClient.connect(process.env.MONGOHQ_URL, function(err, db) {
-				if(!err) {
-					db.collection('pickups', function(err, coll) {
-						if(!err) {
-							coll.insert(pickup, {w:1}, function(err, results) {
-								if(err) { console.log(err); };
-								db.close();
-							});
-						};
-					});
-				};
-			});
+			new Pickup().addPickup(pickup);
 
+			// Real-time feed via ajax:
 			params.connections.forEach(function(elem, index, array) {
 				elem.write('data: ' + JSON.stringify(pickup) + '\n\n');
 			})

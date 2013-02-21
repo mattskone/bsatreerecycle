@@ -21,6 +21,14 @@ app.configure(function() {
   app.set('view engine', 'html');
   app.set('views', __dirname + '/views');
   app.use(express.bodyParser());
+  app.use(function errorHandler(err, req, res, next) {
+    res.status(500);
+    res.render('error', { error: err });
+  })
+});
+
+process.on('unhandledException', function(err) {
+  console.log(err.message);
 });
 
 /*
