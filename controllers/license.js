@@ -4,9 +4,9 @@ module.exports = {
 		res.set('Content-Type', 'text/plain');
 		fs.readFile('LICENSE', 'utf8', function(err, text) {
 			if(err) {
-				console.error(err);
+				console.log('Error reading license file: ' + err.message);
 			} else {
-				fs.close();
+				res.send(text);
 			};
 		});
 	}
