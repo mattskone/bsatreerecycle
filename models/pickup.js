@@ -8,14 +8,24 @@ var Pickup = function() { }
 */
 Pickup.prototype.getPickups = function(ticks, callback) {
 	MongoClient.connect(process.env.MONGOHQ_URL, function(err, db) {
-		if(!err) {
+		if(err) {
+			handleErr('Error connecting to database: ' + err.message, null, callback);
+		} else {
 			db.collection('pickups', function(err, coll) {
-				if(!err) {
+				if(err) {
+					handleErr('Error finding database collection: ' + err.message, db, callback);
+				} else {
 					var start = new Date(ticks);
 					var end = new Date(ticks + 1000*60*60*24);
 					coll.find({"timestamp":{$gte: new Date(ticks),$lt: new Date(ticks + 1000*60*60*24)}})
 						.toArray(function(err, docs) {
-						    if(!err) {
+							if(err) {
+								handleErr(
+									'Error fetching records: ' + err.message + ' (input ' + ticks + ' ticks)',
+									db,
+									callback
+								);
+							} else {
 						    	db.close();
 						    	callback({ 'pickups': docs });
 						    };
@@ -39,16 +49,37 @@ Pickup.prototype.getPickups = function(ticks, callback) {
 */
 Pickup.prototype.addPickup = function(pickup) {
 	MongoClient.connect(process.env.MONGOHQ_URL, function(err, db) {
-		if(!err) {
+		if(err) {
+			handleErr('Error connecting to database: ' + err.message);
+		} else {
 			db.collection('pickups', function(err, coll) {
-				if(!err) {
+				if(err) {
+					handleErr('Error finding database collection: ' + err.message, db);
+				} else {
 					coll.insert(pickup, {w:1}, function(err, results) {
-						db.close();
+						if(err) {
+							handleErr(
+								'Error inserting into database: ' + err.message + ' with ' + JSON.stringify(pickup),
+								db
+							);
+						} else {
+							db.close();
+						}
 					});
 				};
 			});
 		};
 	});
+}
+
+function handleErr(msg, db, callback) {
+	console.log(msg);
+	if(db) {
+		db.close();
+	}
+	if(callback) {
+		callback({ 'pickups': [] });
+	}
 }
 
 module.exports = Pickup;
