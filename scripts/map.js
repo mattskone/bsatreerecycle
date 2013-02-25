@@ -10,7 +10,7 @@ var map,
 $(document).ready(function() {
     cookieZoom = /zoom=\d+/.exec(document.cookie);
     initialZoom = cookieZoom ? Number(cookieZoom[0].slice(5)) : 4;
-    cookieCenter = /center=\(.+(?=\);?)/.exec(document.cookie);
+    cookieCenter = /center=\(.+(?=\);?)/.exec(unescape(document.cookie));
     initialCenter = cookieCenter ? cookieCenter[0].slice(8) : '39.8333, -98.5833';
     $.getJSON('pickups/' + today.setHours(0,0,0,0), function(data) {
         addMarkers(data);
@@ -67,7 +67,7 @@ $(document).ready(function() {
         var latlng = map.getCenter();
         document.cookie='zoom=' + zoom + 
             ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
-        document.cookie='center=' + latlng +
+        document.cookie='center=' + escape(latlng) +
             ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
     });
 });
