@@ -15,6 +15,17 @@ if ( !Array.prototype.forEach ) {
   }
 }
 
+Date.fromISO8601 = function(iso8601timestamp) {
+    var regexp = /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.([0-9]+))?Z$/,
+        d = regexp.exec(iso8601timestamp);
+
+    if(d) {
+        var date = new Date(d[1], d[2] - 1, d[3], d[4], d[5], d[6]),
+            offset = -date.getTimezoneOffset();
+        return date.setTime(Number(date) + (offset * 60 * 1000));
+    }
+}
+
 $(document).ready(function() {
     cookieZoom = /zoom=\d+/.exec(document.cookie);
     initialZoom = cookieZoom ? Number(cookieZoom[0].slice(5)) : 4;
@@ -92,7 +103,7 @@ function addMarkers(markers) {
 function addMarker(location, timestamp, tag) {
     var image = new google.maps.MarkerImage("tree.gif", null, null, null, new google.maps.Size(16, 24));
     var finalTimestamp;
-    if(timestamp) { finalTimestamp = new Date(timestamp).toLocaleString(); }
+    if(timestamp) { finalTimestamp = new Date(Date.fromISO8601(timestamp)).toLocaleString(); }
     marker = new google.maps.Marker({
         position: location,
         title: (tag || "") + " " + (finalTimestamp || ""),
