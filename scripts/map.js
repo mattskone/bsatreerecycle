@@ -16,18 +16,20 @@ $(document).ready(function() {
         addMarkers(data);
     });
 
-    var source = new EventSource('../pickups');
-    source.onmessage = function(e) {
-        var pickup = JSON.parse(e.data);
-        //Only load new trees real-time if user is viewing pickups for "Today":
-        if(!selectedDate || (today - selectedDate < 1000*60*60*24)) {
-            addMarker(new google.maps.LatLng(pickup.lat, pickup.lng)
-                , pickup.timestamp
-                , pickup.tag
-            );
-        }
-    };
-
+    if(window.EventSource) {
+        var source = new EventSource('../pickups');
+        source.onmessage = function(e) {
+            var pickup = JSON.parse(e.data);
+            //Only load new trees real-time if user is viewing pickups for "Today":
+            if(!selectedDate || (today - selectedDate < 1000*60*60*24)) {
+                addMarker(new google.maps.LatLng(pickup.lat, pickup.lng)
+                    , pickup.timestamp
+                    , pickup.tag
+                );
+            }
+        };
+    }
+    
     $(window).resize(function() {
         $('#map_canvas').css('width', $('.container').width());
         $('#map_canvas').css('height', $('.container').width() * 0.75);
