@@ -30,6 +30,7 @@ app.configure(function() {
 //Without encoding, readFileSync() returns buffer, not string
 hbs.registerPartial('footer', fs.readFileSync(__dirname + '/views/footer.html', 'utf8'));
 hbs.registerPartial('head', fs.readFileSync(__dirname + '/views/head.html', 'utf8'));
+hbs.registerPartial('map_script', fs.readFileSync(__dirname + '/views/map_script.html', 'utf8'));
 hbs.registerPartial('nav', fs.readFileSync(__dirname + '/views/nav.html', 'utf8'));
 
 /*

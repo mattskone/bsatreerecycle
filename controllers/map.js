@@ -5,7 +5,8 @@ module.exports = function(params){
 		  		data: { 
 				    version: params.pkg.version, 
 				    page: 'map',
-				    title: 'Map'
+				    title: 'Map',
+				    api_key: process.env.GOOGLE_MAP_API_KEY
 				}
 			});
 		}

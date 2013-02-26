@@ -24,6 +24,12 @@ You'll need [node.js][n], [NPM][npm] and a local installation of [MongoDB][mdb] 
 
 * `MONGOHQ_URL=mongodb://username:password@localhost:27017/pickups` (Note the collection name "pickups")
 
+Your `.env` file will also need a setting that contains your [Google Maps API key][key]:
+
+* `GOOGLE_MAPS_API_KEY=<your API key>`
+
+[key]: https://developers.google.com/maps/documentation/javascript/tutorial#api_key
+
 You'll also need the following dependencies from NPM:
 
 * `express` (web framework for node.js)
