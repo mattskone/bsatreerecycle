@@ -8,6 +8,9 @@ $(document).ready(function() {
     var name = /name=[^;]+/.exec(document.cookie);
     if(!name) { $('#name_input').toggle('slow').focus(); }
     $('#name').text(name ? unescape(name[0]).slice(5) : 'No name');
+    var stored_timestamp = localStorage.getItem('last_pickup');
+    if(stored_timestamp) { stored_timestamp = new Date(stored_timestamp).toLocaleString(); }
+    $('#last_pickup').html(stored_timestamp || 'no pickups today');
     
     $('#submit').click(function () {
         $('#submit').attr('disabled', 'disabled');
@@ -26,9 +29,9 @@ $(document).ready(function() {
           };
           $.post('pickups', pickup);
           $('#last_pickup').html(d.toLocaleString());
-          // $('#latlng').append(JSON.stringify(pickup));
           document.cookie='name=' + escape($('#name').text()) +
             ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
+          localStorage.setItem('last_pickup', d);
         });
     });
 
