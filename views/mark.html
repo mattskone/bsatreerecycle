@@ -29,14 +29,18 @@
             <img src="tree_57x57.png" /><br/><br/>
             <button id="submit" class="btn btn-large btn-success" type="button">Mark a Pickup</button>
             <br/><br/>
-            Last pickup: <em><span id="last_pickup">no pickups today</span></em>
-            <br/>
-            <em>'<span id="name">No name</span>'</em> will be tagged to these pickups.
-            <br/>
-            <input id="name_input" type="search" maxlength=25 placeholder="Type your name here" style="display:none"></input>
-            <div><small><a id="change_name" style="cursor:pointer">Change name</a> | <a href="about#how_to">What's this?</a></small></div>
-          </div>
-          <div class="span3">
+            <div id="geoloc_supported">
+              Last pickup: <em><span id="last_pickup">no pickups today</span></em>
+              <br/>
+              <em>'<span id="name">No name</span>'</em> will be tagged to these pickups.
+              <br/>
+              <input id="name_input" type="search" maxlength=25 placeholder="Type your name here" style="display:none"></input>
+              <div><small><a id="change_name" style="cursor:pointer">Change name</a> | <a href="about#how_to">What's this?</a></small></div>
+            </div>
+            <div id="geoloc_not_supported" style="display:none">
+              Sorry, but your browser does not support this feature.<br/>
+              <small>A few versions of certain browsers don't yet have the built-in geolocation features that this page needs in order to work properly.</small>
+            </div>
           </div>
         </div>
       </div>
