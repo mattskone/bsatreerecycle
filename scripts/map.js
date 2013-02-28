@@ -27,10 +27,8 @@ Date.fromISO8601 = function(iso8601timestamp) {
 }
 
 $(document).ready(function() {
-    cookieZoom = /zoom=\d+/.exec(document.cookie);
-    initialZoom = cookieZoom ? Number(cookieZoom[0].slice(5)) : 4;
-    cookieCenter = /center=\(.+(?=\);?)/.exec(unescape(document.cookie));
-    initialCenter = cookieCenter ? cookieCenter[0].slice(8) : '39.8333, -98.5833';
+    initialZoom = Number(localStorage.getItem('zoom')) || 4;
+    initialCenter = localStorage.getItem('center') || '39.8333, -98.5833';
     $.getJSON('pickups/' + today.setHours(0,0,0,0), function(data) {
         addMarkers(data);
     });
@@ -86,10 +84,8 @@ $(document).ready(function() {
     $('#set_map_default').click(function() {
         var zoom = map.getZoom();
         var latlng = map.getCenter();
-        document.cookie='zoom=' + zoom + 
-            ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
-        document.cookie='center=' + escape(latlng) +
-            ';expires=' + new Date(Date.now() + 1000*60*60*24*30);
+        localStorage.setItem('zoom', zoom);
+        localStorage.setItem('center', latlng.lat() + ', ' + latlng.lng());
     });
 });
 
