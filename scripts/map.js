@@ -1,8 +1,7 @@
-var map,
-    cookieZoom,
-    cookieCenter,
-    initialZoom,
+var initialZoom,
     initialCenter,
+    lastPickup = new Date(),
+    map,
     markers = [],
     selectedDate,
     today = new Date();
@@ -45,6 +44,8 @@ $(document).ready(function() {
                 );
             }
         };
+    } else {
+        poll();
     }
     
     $(window).resize(function() {
@@ -125,4 +126,26 @@ function initialize() {
     };
     map = new google.maps.Map(document.getElementById("map_canvas"),
         mapOptions);
+};
+
+/*
+*   Polling implemented for browsers that don't support server-sent events.
+*/
+function poll() {
+    $.ajax({
+        dataType: 'json',
+        url: 'pickups/' + lastPickup.valueOf(),
+        type: 'GET',
+        cache: false,
+        success: function(e) {
+            addMarkers(e);
+            e.pickups.forEach = function(elem, idx, array) {
+                lastPickup = elem.timestamp > lastPickup ? elem.timestamp : lastPickup;
+            }
+            setTimeout('poll()', 10000);
+        },
+        error: function(xhr, msg, err) {
+            // No error handler yet
+        }
+    });
 };

@@ -1,5 +1,4 @@
-var MongoClient = require('mongodb').MongoClient,
-	Pickup = require('../models/pickup');
+var Pickup = require('../models/pickup');
 
 module.exports = function(params){
 
@@ -13,8 +12,8 @@ module.exports = function(params){
 				var ticks = Number(req.params.date),
 					pickup = new Pickup();
 
-				pickup.getPickups(ticks, function(spam) {
-					res.json(spam);					
+				pickup.getPickups(ticks, function(pickups) {
+					res.json(pickups);					
 				})
 
 			} else {
