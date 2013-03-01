@@ -77,7 +77,6 @@ $(document).ready(function() {
         }
     });
 
-    $('#date_link').html("Today");
     $('#date_link').click(function() {
         $('#calendar').toggle('slow');
     });
@@ -132,20 +131,22 @@ function initialize() {
 *   Polling implemented for browsers that don't support server-sent events.
 */
 function poll() {
-    $.ajax({
-        dataType: 'json',
-        url: 'pickups/' + lastPickup.valueOf(),
-        type: 'GET',
-        cache: false,
-        success: function(e) {
-            addMarkers(e);
-            e.pickups.forEach = function(elem, idx, array) {
-                lastPickup = elem.timestamp > lastPickup ? elem.timestamp : lastPickup;
+    if($('#date_link').text() === 'Today') {    // Only poll if viewing today's data
+        $.ajax({
+            dataType: 'json',
+            url: 'pickups/' + lastPickup.valueOf(),
+            type: 'GET',
+            cache: false,
+            success: function(e) {
+                addMarkers(e);
+                e.pickups.forEach = function(elem, idx, array) {
+                    lastPickup = elem.timestamp > lastPickup ? elem.timestamp : lastPickup;
+                }
+                setTimeout('poll()', 10000);
+            },
+            error: function(xhr, msg, err) {
+                // No error handler yet
             }
-            setTimeout('poll()', 10000);
-        },
-        error: function(xhr, msg, err) {
-            // No error handler yet
-        }
-    });
+        });
+    }
 };
