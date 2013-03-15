@@ -46,6 +46,12 @@ You'll also need the following dependencies from NPM:
 * __0.9.x__ (Spring 2013) Support for recent versions of Safari and Internet Explorer, and beta testing
 * __1.0.x__ (Summer 2013) Production release
 
+###Bitly
+
+The bitly address [http://bit.ly/YuqXLa][bitly] might be easier to type into those tiny smartphone keyboards.
+
+[bitly]: http://bit.ly/YuqXLa
+
 ###Contribution
 
 Comments, questions, feedback and pull requests are welcome.
