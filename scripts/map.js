@@ -32,7 +32,7 @@ $(document).ready(function() {
         addMarkers(data);
     });
 
-    if(window.EventSource) {
+    if(window.EventSource && navigator.userAgent.indexOf('Safari/8') === -1) {
         var source = new EventSource('../pickups');
         source.onmessage = function(e) {
             var pickup = JSON.parse(e.data);
@@ -142,11 +142,11 @@ function poll() {
                 e.pickups.forEach = function(elem, idx, array) {
                     lastPickup = elem.timestamp > lastPickup ? elem.timestamp : lastPickup;
                 }
-                setTimeout('poll()', 10000);
             },
             error: function(xhr, msg, err) {
                 // No error handler yet
             }
         });
     }
+    setTimeout('poll()', 10000);
 };
