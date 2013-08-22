@@ -6,14 +6,14 @@ This is the source code for the [BSA Tree Recycle][btr] web application.  Boy Sc
 
 ###The Stack
 
-This site is hosted by [Heroku][h], and is built on [node.js][n] using the [express][e] web framework. Data is stored in a [MongoDB][mdb] database hosted by [MongoHQ][mhq]. Pages are built with the help of Twitter's outstanding [Bootstrap][b] framework and rendered using [Handlebars][h] templates.  The whole thing is written in JavaScript and HTML5.
+This site is hosted by [Heroku][h], and is built on [node.js][n] using the [express][e] web framework. Data is stored in a [MongoDB][mdb] database hosted by [MongoHQ][mhq]. Pages are built with the help of the outstanding [Bootstrap][b] framework and rendered using [Handlebars][h] templates.  The whole thing is written in JavaScript and HTML5.
 
 [h]: http://www.heroku.com/
 [n]: http://nodejs.org/
 [e]: http://expressjs.com/
 [mdb]: http://www.mongodb.org/
 [mhq]: http://www.mongohq.com/
-[b]: http://twitter.github.com/bootstrap/
+[b]: http://getbootstrap.com/
 [h]: http://handlebarsjs.com/
 
 ###Installation and setup
@@ -42,9 +42,8 @@ You'll also need the following dependencies from NPM:
 
 ###Roadmap
 
-* __0.8.x__ (Current) Basic functionality in recent versions of Chrome and Firefox
-* __0.9.x__ (Spring 2013) Support for recent versions of Safari and Internet Explorer, and beta testing
-* __1.0.x__ (Summer 2013) Production release
+* __0.9.x__ (Summer 2013) Support for recent versions of Safari and Internet Explorer, and beta testing
+* __1.0.x__ (Fall 2013) Production release
 
 ###Bitly
 
